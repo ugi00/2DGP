@@ -1,0 +1,18 @@
+import gfw
+from pico2d import *
+import gobj
+
+class Ground:
+    def __init__(self, left, speed):
+        self.image = gfw.image.load(gobj.res('platform.png'))
+        self.left = left
+        self.bottom = 0
+        self.width = 500
+        self.height = 50
+        self.speed = speed
+    def update(self):
+        self.left -= self.speed * gfw.delta_time
+        if self.left + self.width < 0:
+            self.left = get_canvas_width()
+    def draw(self):
+        self.image.draw_to_origin(self.left, self.bottom, self.width, self.height)

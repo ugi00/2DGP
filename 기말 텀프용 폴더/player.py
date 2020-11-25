@@ -26,7 +26,6 @@ class Player:
     GRAVITY = 3000
     JUMP = 1000
 
-    #constructor
     def __init__(self):
         self.pos = 150, get_canvas_height() // 2 -200
         self.delta = 0, 0
@@ -36,7 +35,7 @@ class Player:
         self.FPS = 10
         self.state = Player.RUNNING
         self.hp = 100
-        self.hp_x = 400
+        self.colide = 0
 
     @property
     def state(self):
@@ -54,9 +53,8 @@ class Player:
         y = y * (PLAYER_SIZE + 2) + 2
         size = PLAYER_SIZE, PLAYER_SIZE
         self.image.clip_draw(x, y, 270, 270, *self.pos, *size)
-        hx, hy = self.hp*5, 30
-        h_y = 600
-        self.hp_image.clip_draw(0,0,497,50,self.hp_x,h_y,hx,hy)
+        h_x, h_y = self.hp*5, 30
+        self.hp_image.draw_to_origin(100,600,h_x,h_y)
 
     def jump(self):
         if self.state in [Player.FALLING, Player.DOUBLE_JUMP, Player.SLIDING]: 
@@ -72,8 +70,7 @@ class Player:
         self.time = 0.0
     def update(self):
         self.time += gfw.delta_time
-        self.hp -= 0.1
-        self.hp_x -= 0.25
+        self.hp -= 0.05
         if self.hp <= 0:
             gfw.quit()
         if self.state in [Player.JUMPING, Player.DOUBLE_JUMP, Player.FALLING]:
@@ -90,13 +87,16 @@ class Player:
 
     def handle_event(self, e):
         if e.type == SDL_KEYDOWN:
-            if e.key == SDLK_RETURN:
+            if e.key == SDLK_DOWN:
                 self.slide()
             elif e.key == SDLK_SPACE or e.key == SDLK_UP:
                 self.jump()
             elif e.key == SDLK_1:
                 n = random.randrange(1,7)
                 self.image = gfw.image.load(gobj.res('cookie_%d.png' % n))
+        if e.type == SDL_KEYUP:
+            if e.key == SDLK_DOWN:
+                self.state = Player.RUNNING
 
     def get_bb(self):
         l, b, r, t = Player.BB_DIFFS[self.state]

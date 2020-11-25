@@ -12,7 +12,7 @@ class Ground:
         self.speed = speed
     def update(self):
         self.left -= self.speed * gfw.delta_time
-        if self.left + self.width < 0:
-            self.left = get_canvas_width()
+        if self.left + self.width <= 0:
+            self.left = 1500 + self.left
     def draw(self):
         self.image.draw_to_origin(self.left, self.bottom, self.width, self.height)

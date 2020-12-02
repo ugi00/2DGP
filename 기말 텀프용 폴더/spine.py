@@ -54,3 +54,32 @@ class Spine2:
             self.x + 15, self.y,
             self.x + 80, self.y + 130
         )
+
+class Spine3:
+    def __init__(self, speed, x):
+        self.image = gfw.image.load(gobj.res('Uspine.png'))
+        self.x = x
+        self.y = 600
+        self.hy = 180
+        self.rect = 0, 0, 78, 264
+        self.speed = speed
+        self.idx = 1
+
+    def update(self):
+        self.x -= self.speed * gfw.delta_time
+        if self.x < 1000 and self.idx == 1:
+            self.y -= 30
+        if self.y <= 120:
+            self.idx = 2
+
+        if self.x + 150 < 0:
+            gfw.world.remove(self)
+
+    def draw(self):
+        self.image.clip_draw_to_origin(*self.rect, self.x, self.y, 150, 700)
+
+    def get_bb(self):
+        return (
+            self.x + 40, self.y,
+            self.x + 110, self.y + 580
+        )

@@ -57,7 +57,7 @@ class Player:
         self.hp_image.draw_to_origin(100,600,h_x,h_y)
 
     def jump(self):
-        if self.state in [Player.FALLING, Player.DOUBLE_JUMP, Player.SLIDING]: 
+        if self.state in [Player.DOUBLE_JUMP, Player.SLIDING]:
             return
         if self.state == Player.RUNNING:
             self.state = Player.JUMPING
@@ -96,7 +96,8 @@ class Player:
                 self.image = gfw.image.load(gobj.res('cookie_%d.png' % n))
         if e.type == SDL_KEYUP:
             if e.key == SDLK_DOWN:
-                self.state = Player.RUNNING
+                if self.state == Player.SLIDING:
+                    self.state = Player.RUNNING
 
     def get_bb(self):
         l, b, r, t = Player.BB_DIFFS[self.state]

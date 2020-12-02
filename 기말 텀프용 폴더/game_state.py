@@ -7,15 +7,19 @@ from back_g import Background
 from ground import Ground
 from jelly import Jelly
 from spine import *
+from missile import Missile
 
 canvas_width = 1000
 canvas_height = 700
 n_speed = 500
 jelly_trigger = 0
 colide_trigger = 0
+uspine_trigger = 40
+missile_trigger = 0
+score = 0
 
 def enter():
-    gfw.world.init(['bg', 'ground', 'spine', 'jelly', 'player'])
+    gfw.world.init(['bg', 'ground', 'spine', 'jelly', 'missile', 'player'])
 
     for n, speed in [(1,10), (2,100)]:
         bg = Background('cookie_run_bg_%d.png' % n)
@@ -26,6 +30,9 @@ def enter():
         ground = Ground(l, sp)
         gfw.world.add(gfw.layer.ground, ground)
 
+    global font
+    font = gfw.font.load('res/ConsolaMalgun.ttf', 30)
+
     global player
     player = Player()
     gfw.world.add(gfw.layer.player, player)
@@ -34,35 +41,63 @@ paused = False
 def update():
     if paused:
         return
+    global score
+    score += gfw.delta_time * 10
+
     gfw.world.update()
-    global jelly_trigger, colide_trigger
+    global jelly_trigger, colide_trigger, uspine_trigger, missile_trigger
     jelly_trigger += 1
-    if jelly_trigger == 60:
+    if jelly_trigger == 80:
         make_jelly()
         jelly_trigger = 0
     check_jelly()
+    uspine_trigger += 1
+    if uspine_trigger == 80:
+        make_uspine()
+        uspine_trigger = 0
+
     if player.colide == 0:
         check_spine()
-        player.colide = 1
+        check_missile()
+
     if player.colide == 1:
         colide_trigger += 1
-        if colide_trigger == 15:
+        if colide_trigger == 30:
             player.colide = 0
             colide_trigger = 0
+
+    if score > 5000:
+        missile_trigger += 1
+        if missile_trigger == 100:
+            make_missile()
+            missile_trigger = 0
 
 def check_jelly():
     for jelly in gfw.world.objects_at(gfw.layer.jelly):
         if gobj.collides_box(player, jelly):
             gfw.world.remove(jelly)
+            global score
+            score += 100
             break
 def check_spine():
     for spine in gfw.world.objects_at(gfw.layer.spine):
         if gobj.collides_box(player, spine):
+            player.hp -= 10
+            player.colide = 1
+            break
+
+def check_missile():
+    for missile in gfw.world.objects_at(gfw.layer.missile):
+        if gobj.collides_box(player, missile):
             player.hp -= 5
+            gfw.world.remove(missile)
             break
 
 def draw():
     gfw.world.draw()
+    gobj.draw_collision_box()
+    score_pos = 800, get_canvas_height() - 30
+    font.draw(*score_pos, 'Score: %.0f' % score, (255, 255, 255))
 
 def handle_event(e):
     if e.type == SDL_QUIT:
@@ -87,9 +122,9 @@ def make_jelly():
             y = 200
             jelly = Jelly(n_speed, x, y)
             gfw.world.add(gfw.layer.jelly, jelly)
-        spine = Spine2(n_speed, canvas_width + 30)
+        spine = Spine2(n_speed, canvas_width + 10)
         gfw.world.add(gfw.layer.spine, spine)
-        spine = Spine2(n_speed, canvas_width + 420)
+        spine = Spine2(n_speed, canvas_width + 400)
         gfw.world.add(gfw.layer.spine, spine)
     elif sh == 2:
         for i in range(4):
@@ -125,6 +160,13 @@ def make_jelly():
         spine = Spine2(n_speed, canvas_width + 200)
         gfw.world.add(gfw.layer.spine, spine)
 
+def make_uspine():
+    spine = Spine3(n_speed,canvas_width + 120)
+    gfw.world.add(gfw.layer.spine,spine)
+
+def make_missile():
+    missile = Missile(n_speed * 1.5,canvas_width + 100)
+    gfw.world.add(gfw.layer.missile,missile)
 def exit():
     pass
 

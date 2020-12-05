@@ -31,7 +31,7 @@ def enter():
         gfw.world.add(gfw.layer.ground, ground)
 
     global font
-    font = gfw.font.load('res/ConsolaMalgun.ttf', 30)
+    font = gfw.font.load('res/CookieRun.ttf', 30)
 
     global player
     player = Player()
@@ -167,6 +167,7 @@ def make_uspine():
 def make_missile():
     missile = Missile(n_speed * 1.5,canvas_width + 100)
     gfw.world.add(gfw.layer.missile,missile)
+
 def exit():
     pass
 

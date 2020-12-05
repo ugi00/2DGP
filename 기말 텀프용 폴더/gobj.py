@@ -42,6 +42,9 @@ def draw_collision_box():
 		if hasattr(obj, 'get_bb'):
 			draw_rectangle(*obj.get_bb())
 
+def mouse_xy(event):
+    return event.x, get_canvas_height() - event.y - 1
+
 def pt_in_rect(point, rect):
     (x, y) = point
     (l, b, r, t) = rect

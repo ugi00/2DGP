@@ -57,8 +57,6 @@ def update():
         obj.update()
     if len(trashcan) > 0:
         empty_trashcan()
-    # counts = list(map(len, objects))
-    # print('count:', counts, count())
 
 def draw():
     for obj in all_objects():

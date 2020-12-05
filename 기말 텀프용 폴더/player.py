@@ -6,30 +6,31 @@ import gobj
 PLAYER_SIZE = 270
 
 class Player:
-    RUNNING, FALLING, JUMPING, DOUBLE_JUMP, SLIDING = range(5)
+    RUNNING, FALLING, JUMPING, DOUBLE_JUMP, SLIDING, DIE = range(6)
     ANIMS = [
         [ 0x40, 0x41, 0x42, 0x43 ], # RUNNING
         [ 0x50 ],                   # FALLING
         [ 0x57, 0x58 ],             # JUMPING
         [ 0x51, 0x52, 0x53, 0x54 ], # DOUBLE_JUMP
         [ 0x59, 0x5A ],             # SLIDING
+        [0x15, 0x16, 0x17, 0x18, 0x19] # die
     ]
-    MAGNIFIED_RUN_ANIM = [ 0x44, 0x45, 0x46, 0x47 ]
     BB_DIFFS = [
         (-60,-135,60,0),   # RUNNING
         (-60,-135,60,10),  # FALLING
         (-60,-135,60,-20), # JUMPING
         (-60,-135,60,-20), # DOUBLE_JUMP
         (-80,-135,80,-68), # SLIDING
+        (-60,-135,80,-68) # die
     ]
 
     GRAVITY = 3000
     JUMP = 1000
 
-    def __init__(self):
+    def __init__(self, Select):
         self.pos = 150, get_canvas_height() // 2 -200
         self.delta = 0, 0
-        self.image = gfw.image.load(gobj.res('cookie_1.png'))
+        self.image = gfw.image.load(gobj.res('cookie_%d.png' % Select))
         self.hp_image = gfw.image.load(gobj.res('hp.png'))
         self.time = 0
         self.FPS = 10
@@ -71,8 +72,6 @@ class Player:
     def update(self):
         self.time += gfw.delta_time
         self.hp -= 0.05
-        if self.hp <= 0:
-            gfw.quit()
         if self.state in [Player.JUMPING, Player.DOUBLE_JUMP, Player.FALLING]:
             self.move((0, self.jump_speed * gfw.delta_time))
             self.jump_speed -= Player.GRAVITY * gfw.delta_time
@@ -81,6 +80,8 @@ class Player:
                 y = 150
                 self.pos = x,y
                 self.state = Player.RUNNING
+        if self.hp <= 0:
+            self.state = Player.DIE
 
     def move(self, diff):
         self.pos = gobj.point_add(self.pos, diff)
@@ -91,9 +92,6 @@ class Player:
                 self.slide()
             elif e.key == SDLK_SPACE or e.key == SDLK_UP:
                 self.jump()
-            elif e.key == SDLK_1:
-                n = random.randrange(1,7)
-                self.image = gfw.image.load(gobj.res('cookie_%d.png' % n))
         if e.type == SDL_KEYUP:
             if e.key == SDLK_DOWN:
                 if self.state == Player.SLIDING:

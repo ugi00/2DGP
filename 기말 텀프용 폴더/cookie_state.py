@@ -2,20 +2,19 @@ from pico2d import *
 import gfw
 import gobj
 from button import Button
-import game_state
-import cookie_state
+import lobby_state
 
 canvas_width = 1000
 canvas_height = 700
 PLAYER_SIZE = 270
-Select = cookie_state.Select
+Select = 1
 
 class Player:
     ANIMS = [[0x40, 0x41, 0x42, 0x43]]
     def __init__(self):
-        self.pos = 480, 350
+        self.pos = 250, 550
         self.delta = 0, 0
-        self.image = gfw.image.load(gobj.res('cookie_%d.png' % Select))
+        self.image = gfw.image.load(gobj.res('cookie_1.png'))
         self.time = 0
         self.FPS = 10
         self.anim = Player.ANIMS[0]
@@ -31,26 +30,21 @@ class Player:
         self.image.clip_draw(x, y, 270, 270, *self.pos, *size)
 
     def update(self):
-        global Select
         self.time += gfw.delta_time
-        Select = cookie_state.Select
         self.image = gfw.image.load(gobj.res('cookie_%d.png' % Select))
 
 def build_world():
     gfw.world.init(['bg', 'ui', 'player'])
 
     center = (canvas_width // 2, canvas_height // 2)
-    bg = gobj.ImageObject('lobby.png', center)
+    bg = gobj.ImageObject('character.png', center)
     gfw.world.add(gfw.layer.bg, bg)
 
+    global font
     font = gfw.font.load(gobj.res('CookieRun.TTF'), 30)
 
-    l, b, w, h = 700, 150, 200, 80
-    btn = Button(l, b, w, h, font, "게임 시작", lambda: gfw.change(game_state))
-    gfw.world.add(gfw.layer.ui, btn)
-
-    b -= 100
-    btn = Button(l, b, w, h, font, "쿠키 선택", lambda: gfw.change(cookie_state))
+    l, b, w, h = 650, 50, 200, 80
+    btn = Button(l, b, w, h, font, "로비", lambda: gfw.change(lobby_state))
     gfw.world.add(gfw.layer.ui, btn)
 
     global player
@@ -66,12 +60,47 @@ def update():
 def draw():
     gfw.world.draw()
 
+    pos = 620, get_canvas_height() - 150
+    if Select == 1:
+        font.draw(*pos, '용감한 쿠키', (255, 255, 255))
+        pos = 560, get_canvas_height() - 250
+        font.draw(*pos,'hp 높음', (255,255,255))
+    elif Select == 2:
+        font.draw(*pos, '명량한 쿠키', (255, 255, 255))
+        pos = 560, get_canvas_height() - 250
+        font.draw(*pos, 'hp 회복', (255, 255, 255))
+    elif Select == 3:
+        font.draw(*pos, '버터크림 쿠키', (255, 255, 255))
+        pos = 560, get_canvas_height() - 250
+        font.draw(*pos, '젤리 생성', (255, 255, 255))
+    elif Select == 4:
+        font.draw(*pos, '구름맛 쿠키', (255, 255, 255))
+        pos = 560, get_canvas_height() - 250
+        font.draw(*pos, '특수 공격', (255, 255, 255))
+    elif Select == 5:
+        font.draw(*pos, '딸기맛 쿠키', (255, 255, 255))
+        pos = 560, get_canvas_height() - 250
+        font.draw(*pos, '특수 공격', (255, 255, 255))
+    elif Select == 6:
+        font.draw(*pos, '쿠엔크 쿠키', (255, 255, 255))
+        pos = 560, get_canvas_height() - 250
+        font.draw(*pos, '특수 공격', (255, 255, 255))
+
 def handle_event(e):
+    global Select
     if e.type == SDL_QUIT:
         return gfw.quit()
     elif e.type == SDL_KEYDOWN:
         if e.key == SDLK_ESCAPE:
             return gfw.pop()
+        if e.key == SDLK_RIGHT:
+            Select += 1
+            if Select == 7:
+                Select = 1
+        if e.key == SDLK_LEFT:
+            Select -= 1
+            if Select == 0:
+                Select = 6
 
     if handle_mouse(e):
         return

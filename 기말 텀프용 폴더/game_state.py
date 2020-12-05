@@ -8,6 +8,8 @@ from ground import Ground
 from jelly import Jelly
 from spine import *
 from missile import Missile
+import cookie_state
+import ranking_state
 
 canvas_width = 1000
 canvas_height = 700
@@ -17,9 +19,13 @@ colide_trigger = 0
 uspine_trigger = 40
 missile_trigger = 0
 score = 0
+Select = cookie_state.Select
+tt = 0
 
 def enter():
     gfw.world.init(['bg', 'ground', 'spine', 'jelly', 'missile', 'player'])
+    global score
+    score = 0
 
     for n, speed in [(1,10), (2,100)]:
         bg = Background('cookie_run_bg_%d.png' % n)
@@ -33,44 +39,58 @@ def enter():
     global font
     font = gfw.font.load('res/CookieRun.ttf', 30)
 
+    global Select
+    Select = cookie_state.Select
     global player
-    player = Player()
+    player = Player(Select)
     gfw.world.add(gfw.layer.player, player)
 
 paused = False
 def update():
-    if paused:
+    global tt
+    if paused == True:
         return
-    global score
-    score += gfw.delta_time * 10
+    if player.hp <= 0:
+        if Select == 2:
+            if tt >= 4:
+                gfw.change(ranking_state)
+        else:
+            if tt >= 5:
+                gfw.change(ranking_state)
+        tt += 1
+        player.update()
 
-    gfw.world.update()
-    global jelly_trigger, colide_trigger, uspine_trigger, missile_trigger
-    jelly_trigger += 1
-    if jelly_trigger == 80:
-        make_jelly()
-        jelly_trigger = 0
-    check_jelly()
-    uspine_trigger += 1
-    if uspine_trigger == 80:
-        make_uspine()
-        uspine_trigger = 0
+    else:
+        global score
+        score += gfw.delta_time * 10
 
-    if player.colide == 0:
-        check_spine()
-        check_missile()
+        gfw.world.update()
+        global jelly_trigger, colide_trigger, uspine_trigger, missile_trigger
+        jelly_trigger += 1
+        if jelly_trigger == 80:
+            make_jelly()
+            jelly_trigger = 0
+        check_jelly()
+        uspine_trigger += 1
+        if uspine_trigger == 80:
+            make_uspine()
+            uspine_trigger = 0
 
-    if player.colide == 1:
-        colide_trigger += 1
-        if colide_trigger == 30:
-            player.colide = 0
-            colide_trigger = 0
+        if player.colide == 0:
+            check_spine()
+            check_missile()
 
-    if score > 5000:
-        missile_trigger += 1
-        if missile_trigger == 100:
-            make_missile()
-            missile_trigger = 0
+        if player.colide == 1:
+            colide_trigger += 1
+            if colide_trigger == 30:
+                player.colide = 0
+                colide_trigger = 0
+
+        if score > 5000:
+            missile_trigger += 1
+            if missile_trigger == 100:
+                make_missile()
+                missile_trigger = 0
 
 def check_jelly():
     for jelly in gfw.world.objects_at(gfw.layer.jelly):

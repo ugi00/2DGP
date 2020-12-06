@@ -87,12 +87,16 @@ class Player:
     def update(self):
         self.time += gfw.delta_time
         self.hp -= 0.05
+
         if self.cookie == 3:
             self.gauge -= 1
         elif self.cookie == 4:
             self.gauge -= 0.5
         elif self.cookie == 5:
             self.gauge -= 0.25
+        elif self.cookie == 6:
+            self.gauge -= 0.25
+
         if self.state in [Player.JUMPING, Player.DOUBLE_JUMP, Player.FALLING]:
             self.move((0, self.jump_speed * gfw.delta_time))
             self.jump_speed -= Player.GRAVITY * gfw.delta_time

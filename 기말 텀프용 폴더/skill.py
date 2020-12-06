@@ -46,9 +46,14 @@ class Skill2: # 파도
             self.effect_image = gfw.image.load(gobj.res('skill2_effect_%d.png' % self.num))
             if self.num == 7:
                 self.nn = 1
+        elif self.nn == 1:
+            self.num -= 0.5
+            self.effect_image = gfw.image.load(gobj.res('skill2_effect_%d.png' % self.num))
+            if self.num == 1:
+                self.nn = 2
         else:
             self.nn += 1
-            if self.nn == 10:
+            if self.nn == 11:
                 gfw.world.remove(self)
                 self.nn = 0
 
@@ -57,8 +62,8 @@ class Skill2: # 파도
 
     def get_bb(self):
         return (
-            self.x - 205, self.y - 205,
-            self.x + 150, self.y + 150,
+            self.x - 205, self.y - 150,
+            self.x + 205, self.y + 150,
         )
 
 class Skill3: # 꽃
@@ -85,5 +90,33 @@ class Skill3: # 꽃
         self.effect_image1.clip_draw(*self.rect1, self.x1, self.y1)
         self.effect_image2.clip_draw(*self.rect2, self.x2, self.y2)
 
-class Skill4:
-    pass
+class Skill4: # 고래
+    def __init__(self):
+        self.num = 1
+        self.effect_image = gfw.image.load(gobj.res('skill4_effect_1.png'))
+        self.x = 400
+        self.y = 200
+        self.rect = 0, 0, 800, 500
+        self.nn = 0
+
+    def update(self):
+        if self.nn == 0:
+            self.num += 0.5
+            self.effect_image = gfw.image.load(gobj.res('skill4_effect_%d.png' % self.num))
+            if self.num == 37:
+                self.nn = 1
+
+        else:
+            self.nn += 1
+            if self.nn == 10:
+                gfw.world.remove(self)
+                self.nn = 0
+
+    def draw(self):
+        self.effect_image.clip_draw(*self.rect, self.x, self.y)
+
+    def get_bb(self):
+        return (
+            self.x - 400, self.y - 170,
+            self.x + 300, self.y + 170,
+        )

@@ -2,6 +2,7 @@ import gfw
 from pico2d import *
 import gobj
 import random
+import game_state
 
 JELLY_BORDER = 2
 JELLY_SIZE = 66
@@ -23,6 +24,8 @@ class Jelly:
         self.speed = speed
     def update(self):
         self.x -= self.speed * gfw.delta_time
+        sp = game_state.n_speed
+        self.speed = sp
         if self.x + JELLY_SIZE < 0:
             gfw.world.remove(self)
     def draw(self):

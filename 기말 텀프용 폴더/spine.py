@@ -2,6 +2,7 @@ import gfw
 from pico2d import *
 import gobj
 import random
+import game_state
 
 class Spine1:
     def __init__(self, speed, x):
@@ -13,6 +14,8 @@ class Spine1:
         self.speed = speed
     def update(self):
         self.x -= self.speed * gfw.delta_time
+        sp = game_state.n_speed
+        self.speed = sp
         if self.x < 800 and self.idx == 1:
             self.image = gfw.image.load(gobj.res('Hspine_2.png'))
             self.idx = 2

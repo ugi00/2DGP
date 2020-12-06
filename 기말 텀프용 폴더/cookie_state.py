@@ -84,7 +84,7 @@ def draw():
     elif Select == 6:
         font.draw(*pos, '쿠엔크 쿠키', (255, 255, 255))
         pos = 560, get_canvas_height() - 250
-        font.draw(*pos, '특수 공격', (255, 255, 255))
+        font.draw(*pos, '젤리 흡수', (255, 255, 255))
 
 def handle_event(e):
     global Select

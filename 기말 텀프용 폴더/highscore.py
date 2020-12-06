@@ -56,7 +56,7 @@ def draw():
     no = 1
     y = 500
     for e in scores:
-        str = "{:2d} {:7.1f}".format(no, e.score)
+        str = "{:2d}등 {:7.0f}점".format(no, e.score)
         color = (255, 255, 128) if no == last_rank else (223, 255, 223)
         font.draw(70, y, str, color)
         font.draw(320, y, time.asctime(time.localtime(e.time)), color)

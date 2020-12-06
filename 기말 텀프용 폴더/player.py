@@ -35,8 +35,14 @@ class Player:
         self.time = 0
         self.FPS = 10
         self.state = Player.RUNNING
-        self.hp = 100
+        self.cookie = Select
+        if self.cookie == 1:
+            self.hp = 150
+        else:
+            self.hp = 100
         self.colide = 0
+        self.gauge = 100
+        self.gauge_image = gfw.image.load(gobj.res('skill.png'))
 
     @property
     def state(self):
@@ -57,6 +63,13 @@ class Player:
         h_x, h_y = self.hp*5, 30
         self.hp_image.draw_to_origin(100,600,h_x,h_y)
 
+        if self.cookie != 1 and self.cookie != 2:
+            x, y = self.pos
+            x -= 50
+            y += 20
+            s_x, s_y = self.gauge, 10
+            self.gauge_image.draw_to_origin(x,y,s_x,s_y)
+
     def jump(self):
         if self.state in [Player.DOUBLE_JUMP, Player.SLIDING]:
             return
@@ -65,13 +78,21 @@ class Player:
         elif self.state == Player.JUMPING:
             self.state = Player.DOUBLE_JUMP
         self.jump_speed = Player.JUMP
+
     def slide(self):
         if self.state != Player.RUNNING: return
         self.state = Player.SLIDING
         self.time = 0.0
+
     def update(self):
         self.time += gfw.delta_time
         self.hp -= 0.05
+        if self.cookie == 3:
+            self.gauge -= 1
+        elif self.cookie == 4:
+            self.gauge -= 0.5
+        elif self.cookie == 5:
+            self.gauge -= 0.25
         if self.state in [Player.JUMPING, Player.DOUBLE_JUMP, Player.FALLING]:
             self.move((0, self.jump_speed * gfw.delta_time))
             self.jump_speed -= Player.GRAVITY * gfw.delta_time

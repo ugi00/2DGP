@@ -7,6 +7,7 @@ from back_g import Background
 from ground import Ground
 from jelly import Jelly
 from spine import *
+from skill import *
 from missile import Missile
 import cookie_state
 import ranking_state
@@ -18,12 +19,17 @@ jelly_trigger = 0
 colide_trigger = 0
 uspine_trigger = 40
 missile_trigger = 0
+speed_trigger = 0
 score = 0
 Select = cookie_state.Select
 tt = 0
+ctrl_m = 100
+ctrl_c = 30
+skill2_trigger = 0
+skill3_trigger = 0
 
 def enter():
-    gfw.world.init(['bg', 'ground', 'spine', 'jelly', 'missile', 'player'])
+    gfw.world.init(['bg', 'ground', 'spine', 'jelly', 'missile','skill_w', 'skill_f', 'player'])
     global score
     score = 0
 
@@ -32,6 +38,7 @@ def enter():
         bg.speed = speed
         gfw.world.add(gfw.layer.bg, bg)
 
+    global ground
     for l, sp in [(0, n_speed), (500, n_speed),(1000, n_speed),(1500, n_speed)]:
         ground = Ground(l, sp)
         gfw.world.add(gfw.layer.ground, ground)
@@ -80,17 +87,58 @@ def update():
             check_spine()
             check_missile()
 
+        global ctrl_c, ctrl_m
         if player.colide == 1:
             colide_trigger += 1
-            if colide_trigger == 30:
+            if colide_trigger == ctrl_c:
                 player.colide = 0
                 colide_trigger = 0
 
-        if score > 5000:
+        global n_speed, speed_trigger
+        speed_trigger += 1
+        if speed_trigger == 100:
+            n_speed += 10
+            speed_trigger = 0
+            if score > 10000:
+                ctrl_m -= 5
+                ctrl_c -= 0.5
+
+        if score > 10000:
             missile_trigger += 1
-            if missile_trigger == 100:
+            if missile_trigger == ctrl_m:
                 make_missile()
                 missile_trigger = 0
+
+
+
+        global skill2_trigger, skill_w, skill_f
+        if player.gauge <= 0:
+            if Select == 3:
+                n = random.randrange(2,5)
+                for i in range(n):
+                    skill_j = Skill1(n_speed)
+                    gfw.world.add(gfw.layer.jelly, skill_j)
+                player.gauge = 100
+
+            elif Select == 4:
+                if skill2_trigger == 0:
+                    skill_w = Skill2()
+                    gfw.world.add(gfw.layer.skill_w, skill_w)
+                skill2_trigger += 1
+                if skill2_trigger < 25:
+                    check_S2_to_spine()
+                if skill2_trigger >= 25:
+                    player.gauge = 100
+                    skill2_trigger = 0
+
+            elif Select == 5:
+                S3_effect()
+                skill_f = Skill3()
+                gfw.world.add(gfw.layer.skill_f, skill_f)
+                player.gauge = 100
+
+            elif Select == 6:
+                pass #skill4
 
 def check_jelly():
     for jelly in gfw.world.objects_at(gfw.layer.jelly):
@@ -99,6 +147,7 @@ def check_jelly():
             global score
             score += 100
             break
+
 def check_spine():
     for spine in gfw.world.objects_at(gfw.layer.spine):
         if gobj.collides_box(player, spine):
@@ -112,6 +161,24 @@ def check_missile():
             player.hp -= 5
             gfw.world.remove(missile)
             break
+
+def check_S2_to_spine():
+    for missile in gfw.world.objects_at(gfw.layer.missile):
+        if gobj.collides_box(skill_w, missile):
+            gfw.world.remove(missile)
+            break
+
+    for spine in gfw.world.objects_at(gfw.layer.spine):
+        if gobj.collides_box(skill_w, spine):
+            gfw.world.remove(spine)
+            break
+
+def S3_effect():
+    for missile in gfw.world.objects_at(gfw.layer.missile):
+            gfw.world.remove(missile)
+
+    for spine in gfw.world.objects_at(gfw.layer.spine):
+            gfw.world.remove(spine)
 
 def draw():
     gfw.world.draw()

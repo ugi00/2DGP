@@ -40,3 +40,21 @@
 
 [3차 발표](https://youtu.be/Bp08if4u3xA).
 
+## 최종 완성표
+![로고](https://github.com/ugi00/2DGP/blob/master/%EC%B5%9C%EC%A2%85%20%EC%9D%BC%EC%A0%95%ED%91%9C.jpg)
+
+## 로고 스테이트
+![로고](https://github.com/ugi00/2DGP/blob/master/%EB%A1%9C%EA%B3%A0.png)
+
+## 로비 스테이트
+![로비](https://github.com/ugi00/2DGP/blob/master/%EB%A1%9C%EB%B9%84.PNG)
+
+## 쿠키 선택 스테이트
+![쿠키 선택](https://github.com/ugi00/2DGP/blob/master/%EC%BA%90%EB%A6%AD%ED%84%B0%20%EC%84%A0%ED%83%9D.PNG)
+
+## 게임 스테이트
+![게임1](https://github.com/ugi00/2DGP/blob/master/%EA%B2%8C%EC%9E%84%ED%99%94%EB%A9%B41.PNG)
+![게임2](https://github.com/ugi00/2DGP/blob/master/%EA%B2%8C%EC%9E%84%ED%99%94%EB%A9%B42.PNG)
+
+## 랭킹 스테이트
+![게임2](https://github.com/ugi00/2DGP/blob/master/%EB%9E%AD%ED%82%B9.PNG)
